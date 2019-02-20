@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 	"github.com/hashicorp/vault/helper/pluginutil"
-	 "github.com/mealal/vault-atals-plugin"
+	"github.com/mealal/vault-atlas-plugin"
 )
 
 func main() {
