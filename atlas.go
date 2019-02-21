@@ -37,7 +37,7 @@ const (
 	UserRoleName      = "readWriteAnyDatabase"
 	atlasHost         = "https://cloud.mongodb.com"
 	atlasURI          = "/api/atlas/v1.0"
-	atlasTypeName     = "mongodb"
+	atlasTypeName     = "atlas"
 )
 
 type atlasConnectionProducer struct {
