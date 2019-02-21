@@ -4,50 +4,47 @@ package atlas
 
 import (
 	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
+	"context"
 	"crypto/md5"
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"strings"
-	"context"
 	"sync"
 	"time"
-	"errors"
+
 	"github.com/hashicorp/vault/api"
-	"github.com/hashicorp/vault/plugins"
-	"github.com/hashicorp/vault/plugins/helper/database/credsutil"
 	"github.com/hashicorp/vault/builtin/logical/database/dbplugin"
+	"github.com/hashicorp/vault/plugins"
 	"github.com/hashicorp/vault/plugins/helper/database/connutil"
+	"github.com/hashicorp/vault/plugins/helper/database/credsutil"
 	"github.com/hashicorp/vault/plugins/helper/database/dbutil"
 	mgo "gopkg.in/mgo.v2"
 )
 
 // const
 const (
-
 	ErrorCode404 = "CLUSTER_NOT_FOUND"
 
-	UserDatabaseStore = "admin"
-	UserRoleDatabase  = "admin"
-	UserRoleName      = "readWriteAnyDatabase"
-	atlasHost         = "https://cloud.mongodb.com"
-	atlasURI          = "/api/atlas/v1.0"
-	atlasTypeName     = "atlas"
+	atlasHost     = "https://cloud.mongodb.com"
+	atlasURI      = "/api/atlas/v1.0"
+	atlasTypeName = "atlas"
 )
 
 type atlasConnectionProducer struct {
-	Username      string `json:"username" structs:"username" mapstructure:"username"`
-	Password      string `json:"password" structs:"password" mapstructure:"password"`
-	Initialized   bool
-	RawConfig     map[string]interface{}
-	Type          string
-	session       *mgo.Session
-	safe          *mgo.Safe
+	Username    string `json:"username" structs:"username" mapstructure:"username"`
+	Password    string `json:"password" structs:"password" mapstructure:"password"`
+	Initialized bool
+	RawConfig   map[string]interface{}
+	Type        string
+	session     *mgo.Session
+	safe        *mgo.Safe
 	sync.Mutex
 }
 
@@ -95,10 +92,10 @@ type Response struct {
 	GroupID         string  `json:"groupId,omitempty"`
 	Roles           []Roles `json:"roles,omitempty"`
 	Username        string  `json:"username,omitempty"`
-	Error			int     `json:"error,omitempty"`
-	ErrorCode		string  `json:"errorCode,omitempty"`
-	ErrorText		string  `json:"detail,omitempty"`
-	ErrorReason		string  `json:"reason,omitempty"`
+	Error           int     `json:"error,omitempty"`
+	ErrorCode       string  `json:"errorCode,omitempty"`
+	ErrorText       string  `json:"detail,omitempty"`
+	ErrorReason     string  `json:"reason,omitempty"`
 }
 
 func New() (interface{}, error) {
@@ -120,7 +117,7 @@ func new() *Atlas {
 
 	return &Atlas{
 		atlasConnectionProducer: connProducer,
-		CredentialsProducer:       credsProducer,
+		CredentialsProducer:     credsProducer,
 	}
 }
 
@@ -158,7 +155,7 @@ func (m *Atlas) CreateUser(ctx context.Context, statements dbplugin.Statements, 
 		return "", "", dbutil.ErrEmptyCreationStatement
 	}
 
-	_ , err = m.getConnection(ctx)
+	_, err = m.getConnection(ctx)
 	if err != nil {
 		return "", "", err
 	}
@@ -201,7 +198,7 @@ func (m *Atlas) CreateUser(ctx context.Context, statements dbplugin.Statements, 
 	}
 
 	err = CreateAtlasUser(mongoCS.groupID, mongoCS.apiID, mongoCS.apiKey, username, password, mongoCS.DB, roles)
-	if  err != nil {
+	if err != nil {
 		return "", "", err
 	}
 	return username, password, nil
@@ -241,7 +238,7 @@ func (m *Atlas) RevokeUser(ctx context.Context, statements dbplugin.Statements, 
 		return err
 	}
 
-	err = DeleteAtlasUser(mongoCS.groupID, mongoCS.apiID, mongoCS.apiKey, username);
+	err = DeleteAtlasUser(mongoCS.groupID, mongoCS.apiID, mongoCS.apiKey, username)
 	switch {
 	case err == nil, err == mgo.ErrNotFound:
 	default:
@@ -465,7 +462,6 @@ func (c *atlasConnectionProducer) Init(ctx context.Context, conf map[string]inte
 	c.Initialized = true
 	return conf, nil
 }
-
 
 func (c *atlasConnectionProducer) Connection(_ context.Context) (interface{}, error) {
 	if !c.Initialized {
