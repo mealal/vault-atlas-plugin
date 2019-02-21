@@ -1,10 +1,21 @@
 package main
 
 import (
-	"github.com/hashicorp/vault/plugins"
+	"log"
+	"os"
+
+	"github.com/hashicorp/vault/helper/pluginutil"
 	atlas "github.com/mealal/vault-atlas-plugin"
 )
 
 func main() {
-	plugins.Serve(new(atlas.Atlas), nil)
+	apiClientMeta := &pluginutil.APIClientMeta{}
+	flags := apiClientMeta.FlagSet()
+	flags.Parse(os.Args[1:])
+
+	err := atlas.Run(apiClientMeta.GetTLSConfig())
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
 }
