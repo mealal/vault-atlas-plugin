@@ -4,12 +4,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/hashicorp/vault/helper/pluginutil"
+	api "github.com/hashicorp/vault/api"
 	atlas "github.com/mealal/vault-atlas-plugin"
 )
 
 func main() {
-	apiClientMeta := &pluginutil.APIClientMeta{}
+	apiClientMeta := &api.PluginAPIClientMeta{}
 	flags := apiClientMeta.FlagSet()
 	flags.Parse(os.Args[1:])
 
