@@ -3,8 +3,11 @@ Hashicorp Vault Atlas Plugin
 
 Used source code from https://github.com/desteves/mongodb-atlas-service-broker/
 
+dep support required https://github.com/golang/dep
+
 ### Build
 ```
+dep ensure
 go build -o atlas ./mongodb-atlas-plugin/main.go
 ```
 
