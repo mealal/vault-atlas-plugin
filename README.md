@@ -20,6 +20,11 @@ vault write sys/plugins/catalog/database/atlas sha_256="$SHASUM" command="atlas"
 vault write database/roles/readonly db_name=atlas creation_statements='{ "db": "admin", "roles": [{ "role": "readAnyDatabase" }] }' default_ttl="1h" max_ttl="24h"
 vault write database/config/atlas plugin_name=atlas allowed_roles="readonly" apiID="public API key" apiKey="private API key" groupID="group id"
 ```
+### Security
+If your system uses  ```mlock``` you should allow it for the plugin
+```
+sudo setcap cap_ipc_lock=+ep /your_plugin_directory_path/atlas
+```
 
 ### Test
 ```
