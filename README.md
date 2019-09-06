@@ -28,7 +28,7 @@ vault write database/roles/readonly db_name=atlas creation_statements='{ "db": "
 vault write database/config/atlas plugin_name=atlas allowed_roles="readonly" apiID="public API key" apiKey="private API key" groupID="group id"
 ```
 ### Security
-If your system uses  ```mlock``` you should allow it for the plugin
+If your system uses  _mlock_ you should allow it for the plugin
 ```
 sudo setcap cap_ipc_lock=+ep /your_plugin_directory_path/atlas
 ```
