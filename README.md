@@ -1,18 +1,25 @@
 # vault-atlas-plugin
-Hashicorp Vault Atlas Plugin
+Hashicorp Vault 1.1.2 Atlas Plugin
 
 Used source code from https://github.com/desteves/mongodb-atlas-service-broker/
 
-dep support required https://github.com/golang/dep
+_dep_ support required https://github.com/golang/dep
 
 ### Build
+The buld procedure requires Docker and uses clean Docker image to build the plugin for Linux and Mac. Plugin files will be placed into _build_ subfolder.
 ```
-dep ensure
-go build -o atlas ./mongodb-atlas-plugin/main.go
+./docker_build.sh
+```
+
+### Old Build
+Use this build if you don't want to use Docker. Plugin files will be placed into _build_ subfolder.
+```
+./build.sh
 ```
 
 ### Install
-Place atlas file into your plugins folder and run
+Identify the proper plugin file in *build* folder (atlas-darwin-386,atlas-darwin-amd64,atlas-linux-386,atlas-linux-amd64) and rename it to _atlas_
+Place _atlas_ file into your plugins folder and run
 ```
 vault secrets enable database
 SHASUM=$(shasum -a 256 "./atlas" | cut -d " " -f1)
