@@ -1,2 +1,4 @@
 #Vendor folder
-.vendor
+vendor
+Gopkg.lock
+atlas
