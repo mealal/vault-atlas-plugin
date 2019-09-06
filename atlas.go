@@ -144,57 +144,6 @@ func (m *Atlas) CreateUser(ctx context.Context, statements dbplugin.Statements, 
 	return username, password, nil
 }
 
-//SetCredentials function
-func (m *Atlas) SetCredentials(ctx context.Context, statements dbplugin.Statements, staticUser dbplugin.StaticUserConfig) (username string, password string, err error) {
-	if m == nil {
-		return "", "", fmt.Errorf("NIL detected")
-	}
-	m.Lock()
-	defer m.Unlock()
-
-	statements = dbutil.StatementCompatibilityHelper(statements)
-
-	if len(statements.Creation) == 0 {
-		return "", "", dbutil.ErrEmptyCreationStatement
-	}
-
-	username = staticUser.Username
-	password = staticUser.Password
-
-	var mongoCS atlasStatement
-	err = json.Unmarshal([]byte(statements.Creation[0]), &mongoCS)
-	if err != nil {
-		return "", "", err
-	}
-
-	if len(mongoCS.Roles) == 0 {
-		return "", "", fmt.Errorf("roles array is required in creation statement")
-	}
-
-	// Default to "admin" if no db provided
-	if mongoCS.DB == "" {
-		mongoCS.DB = "admin"
-	}
-
-	var roles []Roles
-	for _, role := range mongoCS.Roles {
-		var atlasRole Roles
-		atlasRole.RoleName = role.Role
-		if role.DB == "" {
-			atlasRole.DatabaseName = "admin"
-		} else {
-			atlasRole.DatabaseName = role.DB
-		}
-		roles = append(roles, atlasRole)
-	}
-
-	err = createAtlasUser(m.GroupID, m.APIId, m.APIKey, username, password, mongoCS.DB, roles)
-	if err != nil {
-		return "", "", err
-	}
-	return username, password, nil
-}
-
 //RenewUser function
 func (m *Atlas) RenewUser(ctx context.Context, statements dbplugin.Statements, username string, expiration time.Time) error {
 	return nil
