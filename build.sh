@@ -5,7 +5,7 @@ DEP=`which dep`
 
 if [ "$DEP" == "" ]; then
     echo "dep command not found"
-    exit
+    exit 1
 fi
 
 if [ -d vendor ]; then
@@ -13,4 +13,11 @@ if [ -d vendor ]; then
 fi
 
 $DEP ensure $UPDATE
-go build -o atlas ./mongodb-atlas-plugin/main.go
+rm -rf ./build
+mkdir -p ./build
+for GOOS in darwin linux; do
+   for GOARCH in 386 amd64; do
+     export GOOS GOARCH
+     go build -o ./build/atlas-$GOOS-$GOARCH ./mongodb-atlas-plugin/main.go
+   done
+done
