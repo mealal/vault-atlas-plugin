@@ -1,5 +1,5 @@
 # vault-atlas-plugin
-Hashicorp Vault 1.1.2 Atlas Plugin
+Hashicorp Vault 1.2.2 Atlas Plugin
 
 Used source code from https://github.com/desteves/mongodb-atlas-service-broker/
 
