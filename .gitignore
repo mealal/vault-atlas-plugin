@@ -1,4 +1,4 @@
-#Vendor folder
 vendor
 Gopkg.lock
 atlas
+build
