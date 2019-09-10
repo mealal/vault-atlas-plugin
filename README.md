@@ -16,6 +16,8 @@ Use this build if you don't want to use Docker. Plugin files will be placed into
 ```
 ./build.sh
 ```
+### Test the plugin
+The plugin can be tested using the official Docker image from Hashicorp. Go to [test](https://github.com/mealal/vault-atlas-plugin/tree/master/test) for the details.
 
 ### Install
 Identify the proper plugin file in *build* folder (atlas-darwin-386,atlas-darwin-amd64,atlas-linux-386,atlas-linux-amd64) and rename it to _atlas_
