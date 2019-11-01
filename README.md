@@ -1,4 +1,12 @@
 # vault-atlas-plugin
+
+## Official plugin
+I would recommend to test and use the official MongoDB Atals plugin. 
+https://github.com/mongodb/vault-plugin-secrets-mongodbatlas
+
+Support of this plugin is discontinued. 
+
+## Description
 Hashicorp Vault 1.2.2 Atlas Plugin
 
 Used source code from https://github.com/desteves/mongodb-atlas-service-broker/
